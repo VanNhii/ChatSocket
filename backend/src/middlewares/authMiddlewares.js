@@ -17,7 +17,7 @@ export const protectRoute = (req, res, next) => {
             return res.status(403).json({mesage: "Access Token không hợp lệ, vui lòng đăng nhập lại"});
         }
          // Hợp lệ thì tìm user tương ứng trong db để chắc chắn tài khoản là thật và chưa bị xoá
-        const user = await User.findById(decoded.userId).select('-hashPassword');  
+        const user = await User.findById(decoded.userId).select('-hashedPassword');  
         if (!user) {
             return res.status(401).json({mesage: "Người dùng không tồn tại, vui lòng đăng nhập lại"});
         }
@@ -26,6 +26,7 @@ export const protectRoute = (req, res, next) => {
         req.user = user; // gắn user vào req để các middleware sau sử dụng
         next(); // cho phép đi tiếp
         });
+
 
     } catch (error) {
         console.error("Lỗi xác minh JWT trong authMiddlewares:", error);
